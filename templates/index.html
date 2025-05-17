@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Animal Classifier</title>
+</head>
+<body>
+<h1>Upload an Animal Image</h1>
+<input type="file" id="imageInput" accept="image/*">
+<button onclick="sendImage()">Predict</button>
+<p id="result"></p>
+
+<script>
+  async function sendImage() {
+    const input = document.getElementById('imageInput');
+
+    // Check if an image is selected
+    if (!input.files[0]) {
+      alert("Please select an image.");
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(input.files[0].type)) {
+      alert("Only JPEG and PNG files are supported.");
+      return;
+    }
+
+    // Prepare the file for upload
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    // Display loading message
+    document.getElementById("result").innerText = "Processing...";
+
+    try {
+      // Send POST request to backend
+      const response = await fetch("/predict", {  // No need for localhost URL
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to get a valid response from the server");
+      }
+
+      const result = await response.json();
+      document.getElementById("result").innerText = `Predicted class: ${result.prediction}`;
+    } catch (err) {
+      console.error(err);
+      document.getElementById("result").innerText = `Error: ${err.message}`;
+    }
+  }
+</script>
+</body>
+</html>

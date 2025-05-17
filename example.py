@@ -16,3 +16,12 @@ while cap.isOpened():
     key = cv2.waitKey(20)
     if key == ord('q'):
         break
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+model = LinearRegression
+# from torch import nn
+# import torch
+#
+# print(torch.cuda.is_available())
+# print(torch.cuda.get_device_name(0))
